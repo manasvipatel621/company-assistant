@@ -5,11 +5,14 @@ import com.tcet.companyassistant.company_assistant.entity.Department;
 import com.tcet.companyassistant.repository.DepartmentRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/departments")
+@Tag(name = "Departments", description = "Manage company departments")
 public class DepartmentController {
     private static final Logger logger =
         LoggerFactory.getLogger(DepartmentController.class);
@@ -48,7 +51,7 @@ public List<Department> getAllDepartments() {
 }
     @PostMapping
     public Department createDepartment(
-            @RequestBody Department department) {
+            @Valid @RequestBody Department department) {
 
         return departmentRepository.save(department);
     }
@@ -56,7 +59,7 @@ public List<Department> getAllDepartments() {
     @PutMapping("/{id}")
     public ResponseEntity<Department> updateDepartment(
             @PathVariable Integer id,
-            @RequestBody Department departmentDetails) {
+            @Valid @RequestBody Department departmentDetails) {
 
         return departmentRepository.findById(id)
                 .map(department -> {

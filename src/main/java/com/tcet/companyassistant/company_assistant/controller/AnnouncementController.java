@@ -4,12 +4,15 @@ import com.tcet.companyassistant.company_assistant.entity.Announcement;
 import com.tcet.companyassistant.repository.AnnouncementRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/announcements")
+@Tag(name = "Announcements", description = "Manage company announcements")
 public class AnnouncementController {
     private static final Logger logger =
         LoggerFactory.getLogger(AnnouncementController.class);
@@ -49,7 +52,7 @@ public ResponseEntity<Announcement> getAnnouncementById(
 
     @PostMapping
     public Announcement createAnnouncement(
-            @RequestBody Announcement announcement) {
+            @Valid @RequestBody Announcement announcement) {
 
         return announcementRepository.save(announcement);
     }
@@ -57,7 +60,7 @@ public ResponseEntity<Announcement> getAnnouncementById(
     @PutMapping("/{id}")
     public ResponseEntity<Announcement> updateAnnouncement(
             @PathVariable Integer id,
-            @RequestBody Announcement announcementDetails) {
+            @Valid @RequestBody Announcement announcementDetails) {
 
         return announcementRepository.findById(id)
                 .map(announcement -> {

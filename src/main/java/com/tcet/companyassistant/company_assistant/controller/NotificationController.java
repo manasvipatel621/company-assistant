@@ -4,12 +4,15 @@ import com.tcet.companyassistant.company_assistant.entity.Notification;
 import com.tcet.companyassistant.repository.NotificationRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/notifications")
+@Tag(name = "Notifications", description = "Manage user notifications")
 public class NotificationController {
 private static final Logger logger =
         LoggerFactory.getLogger(NotificationController.class);
@@ -49,7 +52,7 @@ public ResponseEntity<Notification> getNotificationById(
 
     @PostMapping
     public Notification createNotification(
-            @RequestBody Notification notification) {
+            @Valid @RequestBody Notification notification) {
 
         return notificationRepository.save(notification);
     }
@@ -57,7 +60,7 @@ public ResponseEntity<Notification> getNotificationById(
     @PutMapping("/{id}")
     public ResponseEntity<Notification> updateNotification(
             @PathVariable Integer id,
-            @RequestBody Notification notificationDetails) {
+            @Valid @RequestBody Notification notificationDetails) {
 
         return notificationRepository.findById(id)
                 .map(notification -> {

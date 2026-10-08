@@ -7,11 +7,14 @@ import com.tcet.companyassistant.company_assistant.exception.ResourceNotFoundExc
 import com.tcet.companyassistant.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "Users", description = "Manage company users")
 public class UserController {
     private static final Logger logger =
         LoggerFactory.getLogger(UserController.class);
@@ -23,6 +26,7 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "List users", description = "Returns all company users")
 public List<User> getAllUsers() {
     logger.info("Fetching all users");
 
@@ -35,6 +39,7 @@ public List<User> getAllUsers() {
 
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get user", description = "Returns a user by ID")
 public User getUserById(@PathVariable Integer id) {
 
     logger.info("Fetching user with ID: {}", id);
@@ -48,7 +53,8 @@ public User getUserById(@PathVariable Integer id) {
             });
 }
    @PostMapping
-public User createUser(@RequestBody User user)
+@Operation(summary = "Create user", description = "Creates a new company user")
+public User createUser(@Valid @RequestBody User user)
  {
     logger.info("Creating new user with email: {}", user.getEmail());
 
@@ -61,9 +67,12 @@ public User createUser(@RequestBody User user)
 }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Replace user", description = "Replaces all editable fields of a user")
     public ResponseEntity<User> updateUser(
             @PathVariable Integer id,
-            @RequestBody User userDetails) {
+            @Valid @RequestBody User userDetails) {
+
+        logger.info("Updating user with ID: {}", id);
 
         return userRepository.findById(id)
                 .map(user -> {
@@ -77,17 +86,21 @@ public User createUser(@RequestBody User user)
                     user.setDepartmentId(userDetails.getDepartmentId());
                     user.setCreatedAt(userDetails.getCreatedAt());
 
-                    return ResponseEntity.ok(
-                            userRepository.save(user)
-                    );
+                    User updatedUser = userRepository.save(user);
+                    logger.info("User with ID {} updated successfully", id);
+                    return ResponseEntity.ok(updatedUser);
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> {
+                    logger.warn("User not found for update with ID: {}", id);
+                    return ResponseEntity.notFound().build();
+                });
     }
 
 @PatchMapping("/{id}")
+@Operation(summary = "Partially update user", description = "Updates only the supplied user fields")
 public ResponseEntity<User> patchUser(
         @PathVariable Integer id,
-        @Valid @RequestBody User userDetails) {
+        @RequestBody User userDetails) {
 
     logger.info("Patching user with ID: {}", id);
 
@@ -141,14 +154,19 @@ public ResponseEntity<User> patchUser(
 }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete user", description = "Deletes a user by ID")
     public ResponseEntity<Void> deleteUser(
             @PathVariable Integer id) {
 
+        logger.info("Deleting user with ID: {}", id);
+
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
+            logger.info("User with ID {} deleted successfully", id);
             return ResponseEntity.noContent().build();
         }
 
+        logger.warn("User not found for deletion with ID: {}", id);
         return ResponseEntity.notFound().build();
     }
 }

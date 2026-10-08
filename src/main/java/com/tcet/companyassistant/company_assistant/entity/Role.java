@@ -5,7 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.List;
 
 @Entity
 @Table(name = "role")
@@ -20,6 +25,10 @@ public class Role {
     private String roleName;
 
     private String description;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    private List<User> users;
 
 
     public Integer getRoleId() {
@@ -44,5 +53,13 @@ public class Role {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

@@ -4,12 +4,15 @@ import com.tcet.companyassistant.company_assistant.entity.Task;
 import com.tcet.companyassistant.repository.TaskRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
+@Tag(name = "Tasks", description = "Manage company tasks")
 public class TaskController {
 private static final Logger logger =
         LoggerFactory.getLogger(TaskController.class);
@@ -47,14 +50,14 @@ public ResponseEntity<Task> getTaskById(
 }
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
+    public Task createTask(@Valid @RequestBody Task task) {
         return taskRepository.save(task);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(
             @PathVariable Integer id,
-            @RequestBody Task taskDetails) {
+            @Valid @RequestBody Task taskDetails) {
 
         return taskRepository.findById(id)
                 .map(task -> {

@@ -1,9 +1,13 @@
 package com.tcet.companyassistant.company_assistant.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
@@ -20,9 +24,29 @@ public class Announcement {
 
     private String content;
 
+    @Column(name = "published_by")
     private Integer publishedBy;
 
+    @Column(name = "department_id")
     private Integer departmentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "published_by",
+        referencedColumnName = "user_id",
+        insertable = false,
+        updatable = false
+    )
+    private User publisher;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "department_id",
+        referencedColumnName = "department_id",
+        insertable = false,
+        updatable = false
+    )
+    private Department department;
 
     private LocalDateTime publishedAt;
 
@@ -64,6 +88,22 @@ public class Announcement {
 
     public void setDepartmentId(Integer departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public User getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(User publisher) {
+        this.publisher = publisher;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public LocalDateTime getPublishedAt() {

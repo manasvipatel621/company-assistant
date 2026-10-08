@@ -1,15 +1,18 @@
 package com.tcet.companyassistant.company_assistant.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
 import com.tcet.companyassistant.company_assistant.entity.Role;
 import com.tcet.companyassistant.repository.RoleRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/roles")
+@Tag(name = "Roles", description = "Manage user roles")
 public class RoleController {
     private static final Logger logger =
         LoggerFactory.getLogger(RoleController.class);
@@ -47,14 +50,14 @@ public ResponseEntity<Role> getRoleById(
             });
 }
     @PostMapping
-    public Role createRole(@RequestBody Role role) {
+    public Role createRole(@Valid @RequestBody Role role) {
         return roleRepository.save(role);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Role> updateRole(
             @PathVariable Integer id,
-            @RequestBody Role roleDetails) {
+            @Valid @RequestBody Role roleDetails) {
 
         return roleRepository.findById(id)
                 .map(role -> {

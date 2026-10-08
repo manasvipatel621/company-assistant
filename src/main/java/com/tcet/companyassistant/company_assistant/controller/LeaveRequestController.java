@@ -4,12 +4,15 @@ import com.tcet.companyassistant.company_assistant.entity.LeaveRequest;
 import com.tcet.companyassistant.repository.LeaveRequestRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/leave-requests")
+@Tag(name = "Leave requests", description = "Manage employee leave requests")
 public class LeaveRequestController {
     private static final Logger logger =
         LoggerFactory.getLogger(LeaveRequestController.class);
@@ -49,7 +52,7 @@ public ResponseEntity<LeaveRequest> getLeaveRequestById(
 }
     @PostMapping
     public LeaveRequest createLeaveRequest(
-            @RequestBody LeaveRequest leaveRequest) {
+            @Valid @RequestBody LeaveRequest leaveRequest) {
 
         return leaveRequestRepository.save(leaveRequest);
     }
@@ -57,7 +60,7 @@ public ResponseEntity<LeaveRequest> getLeaveRequestById(
     @PutMapping("/{id}")
     public ResponseEntity<LeaveRequest> updateLeaveRequest(
             @PathVariable Integer id,
-            @RequestBody LeaveRequest details) {
+            @Valid @RequestBody LeaveRequest details) {
 
         return leaveRequestRepository.findById(id)
                 .map(leaveRequest -> {

@@ -4,12 +4,15 @@ import com.tcet.companyassistant.company_assistant.entity.Meeting;
 import com.tcet.companyassistant.repository.MeetingRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/meetings")
+@Tag(name = "Meetings", description = "Manage company meetings")
 public class MeetingController {
     private static final Logger logger =
         LoggerFactory.getLogger(MeetingController.class);
@@ -50,7 +53,7 @@ public ResponseEntity<Meeting> getMeetingById(
 
     @PostMapping
     public Meeting createMeeting(
-            @RequestBody Meeting meeting) {
+            @Valid @RequestBody Meeting meeting) {
 
         return meetingRepository.save(meeting);
     }
@@ -58,7 +61,7 @@ public ResponseEntity<Meeting> getMeetingById(
     @PutMapping("/{id}")
     public ResponseEntity<Meeting> updateMeeting(
             @PathVariable Integer id,
-            @RequestBody Meeting meetingDetails) {
+            @Valid @RequestBody Meeting meetingDetails) {
 
         return meetingRepository.findById(id)
                 .map(meeting -> {

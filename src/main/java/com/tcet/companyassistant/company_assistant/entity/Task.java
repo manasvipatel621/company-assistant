@@ -1,9 +1,13 @@
 package com.tcet.companyassistant.company_assistant.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
@@ -25,7 +29,17 @@ public class Task {
 
     private LocalDate dueDate;
 
+    @Column(name = "created_by")
     private Integer createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "created_by",
+        referencedColumnName = "user_id",
+        insertable = false,
+        updatable = false
+    )
+    private User creator;
 
     private LocalDateTime createdAt;
 
@@ -75,6 +89,14 @@ public class Task {
 
     public void setCreatedBy(Integer createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
     public LocalDateTime getCreatedAt() {
